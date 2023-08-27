@@ -89,4 +89,6 @@ public class AdminController {
 
         return "redirect:/admin/view-accountants"; // Redirect back to the view accountants page
     }
+
+
 }

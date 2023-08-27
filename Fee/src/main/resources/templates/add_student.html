@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css"> <!-- Add your custom styles if needed -->
+  <title>Add Student</title>
+</head>
+<body>
+<!-- Top bar and background -->
+<div class="top-bar">
+  <!-- ... (similar to previous pages) -->
+</div>
+
+<div class="background">
+  <div class="content">
+    <h2>Add Student</h2>
+    <form action="/student/save-student" method="post">
+      <div class="form-field">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-field">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-field">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-field">
+        <label>Sex:</label>
+        <label><input type="radio" name="sex" value="male"> Male</label>
+        <label><input type="radio" name="sex" value="female"> Female</label>
+      </div>
+      <div class="form-field">
+        <label for="course">Course:</label>
+        <input type="text" id="course" name="course" required>
+      </div>
+      <div class="form-field">
+        <label for="fee">Fee:</label>
+        <input type="number" id="fee" name="fee" required>
+      </div>
+      <div class="form-field">
+        <label for="paid">Paid:</label>
+        <input type="number" id="paid" name="paid" required>
+      </div>
+      <div class="form-field">
+        <label for="due">Due:</label>
+        <input type="number" id="due" name="due" disabled>
+      </div>
+      <div class="form-field">
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="3" required></textarea>
+      </div>
+      <div class="form-field">
+        <label for="contact">Contact No:</label>
+        <input type="text" id="contact" name="contact" required>
+      </div>
+
+
+      <label for="studentFeeStatus">Fee Status:</label>
+      <select id="studentFeeStatus" name="studentFeeStatus" required>
+        <option value="Paid">Paid</option>
+        <option value="Not Paid">Not Paid</option>
+      </select>
+      <button type="submit" class="submit-button">Save Student</button>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p>&copy; 2023 Your Company. All rights reserved.</p>
+</div>
+</body>
+</html>

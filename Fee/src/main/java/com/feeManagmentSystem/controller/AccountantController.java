@@ -1,7 +1,9 @@
 package com.feeManagmentSystem.controller;
 
 import com.feeManagmentSystem.entity.Accountant;
+import com.feeManagmentSystem.entity.Student;
 import com.feeManagmentSystem.repository.AccountantRepository;
+import com.feeManagmentSystem.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,9 @@ public class AccountantController {
 
     @Autowired
     private AccountantRepository accountantRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @GetMapping("/admin/view-accountants")
     public String viewAccountants(Model model) {
@@ -39,5 +44,16 @@ public class AccountantController {
     public String deleteAccountant(@PathVariable Long id) {
         accountantRepository.deleteById(id);
         return "redirect:/admin/view-accountants";
+    }
+
+    @GetMapping("/accountant/edit-student/{id}")
+    public String showEditStudentForm(@PathVariable Long id, Model model) {
+        Optional<Student> student = studentRepository.findById(id);
+        if (student.isPresent()) {
+            model.addAttribute("student", student.get());
+            return "edit_student"; // Return the edit student form view
+        } else {
+            return "redirect:/accountant/view-students";
+        }
     }
 }
