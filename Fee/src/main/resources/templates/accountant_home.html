@@ -87,6 +87,7 @@
         <div class="buttons">
             <a href="/accountant/add-student" class="button">Add Student</a>
             <a href="/accountant/view-students" class="button">View Students</a>
+            <button class="button" id="sendEmailButton">Send Email</button> <!-- Use a button element instead of anchor -->
         </div>
     </div>
 </div>
@@ -95,5 +96,28 @@
 <div class="footer">
     <p>&copy; 2023 Your Company. All rights reserved.</p>
 </div>
+<!-- Include jQuery library -->
+<script src=https://code.jquery.com/jquery-3.6.0.js></script>
+<script>
+    $(document).ready(function() {
+        $("#sendEmailButton").click(function() {
+            sendEmailToStudents();
+        });
+    });
+
+    function sendEmailToStudents() {
+        $.ajax({
+            type: "POST",
+            url: "/accountant/send-email",
+            contentType: "application/json",
+            success: function(response) {
+                alert("Emails sent successfully!");
+            },
+            error: function() {
+                alert("Error sending emails. Please try again.");
+            }
+        });
+    }
+</script>
 </body>
 </html>

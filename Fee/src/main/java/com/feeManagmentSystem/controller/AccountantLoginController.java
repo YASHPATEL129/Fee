@@ -6,7 +6,12 @@ import com.feeManagmentSystem.entity.Student;
 import com.feeManagmentSystem.repository.AccountantRepository;
 import com.feeManagmentSystem.repository.StudentRepository;
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +21,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/accountant")
+@AllArgsConstructor
 public class AccountantLoginController {
 
     @Autowired
@@ -26,6 +32,11 @@ public class AccountantLoginController {
 
     @Autowired
     private EmailService emailService;
+
+    private final JavaMailSender emailSender;
+
+
+
 
     @GetMapping("/")
     public String loginPage() {
@@ -74,14 +85,6 @@ public class AccountantLoginController {
     }
 
 
-    @GetMapping("/send-email")
-    public String sendEmailToAllStudents(Model model) {
-        List<Student> students = studentRepository.findAll();
-        emailService.sendEmailsToAllStudents(students);
-        model.addAttribute("message", "Emails sent successfully.");
-        return "view_students"; // Redirect back to the view students page
-    }
-
     @GetMapping("/delete-student/{id}")
     public String deleteStudent(@PathVariable Long id) {
         studentRepository.deleteById(id); // Delete student by ID
@@ -117,7 +120,35 @@ public class AccountantLoginController {
         return "redirect:/accountant/view-students";
     }
 
+    @PostMapping("/send-email")
+    @ResponseBody
+    public ResponseEntity<String> sendEmailToStudents() {
+        try {
+            List<Student> students = studentRepository.findAll(); // Retrieve all students from the repository
 
+            for (Student student : students) {
+                String subject = "Fee Reminder";
+                String message = "Dear " + student.getName() + ",\n\n";
+                message += "Your fee details:\n";
+                message += "Total Fee: " + student.getFee() + "\n";
+                message += "Paid Fee: " + student.getPaid() + "\n";
+                message += "Due Fee: " + student.getDue() + "\n\n";
+                message += "If you have already paid the fee, you can ignore this email.\n";
+                message += "If not, please pay the fee as soon as possible.\n\n";
+                message += "Regards,\nYour School";
 
+                SimpleMailMessage email = new SimpleMailMessage();
+                email.setTo(student.getEmail());
+                email.setSubject(subject);
+                email.setText(message);
 
+                emailSender.send(email);
+            }
+
+            return ResponseEntity.ok("Emails sent successfully!");
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception details
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending emails");
+        }
+    }
 }
