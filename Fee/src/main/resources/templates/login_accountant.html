@@ -4,22 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accountant Login</title>
-  <!-- Add your CSS styles or links here -->
+  <style>
+        /* Reset default margin and padding */
+body, h1, h2, h3, h4, h5, h6, p, form, label, input, button {
+    margin: 0;
+    padding: 0;
+}
+
+
+.background {
+    background-image : url('/resources/static/img/accountant_background.jpg') !important;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style the login container */
+.login-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Style the login form */
+form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Style labels and inputs */
+label, input {
+    margin-bottom: 10px;
+}
+
+input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+
+/* Style the submit button */
+button {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 294px;
+        margin-top: 20px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Center the button */
+form button {
+    align-self: center;
+}
+
+    </style>
 </head>
 <body>
+<div class="background">
 <div class="login-container">
   <h2>Accountant Login</h2>
   <form th:action="@{/accountant/authenticate}" method="post">
-    <div class="form-field">
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" required>
-    </div>
-    <div class="form-field">
       <label for="password">Password:</label>
       <input type="password" id="password" name="password" required>
-    </div>
+      <div th:if="${loginError}" class="error-message">
+      <p th:text="${loginError}"></p>
+      </div>
     <button type="submit" class="button">Login</button>
   </form>
+</div>
 </div>
 </body>
 </html>

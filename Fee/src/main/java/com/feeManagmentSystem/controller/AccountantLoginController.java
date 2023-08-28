@@ -187,28 +187,4 @@ public class AccountantLoginController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending emails");
         }
     }
-
-
-
-    @GetMapping("/change-password")
-    public String showChangePasswordForm() {
-        return "change_password"; // Return the HTML template name
-    }
-
-    @PostMapping("/change-password")
-    public String changePassword(@RequestParam("newPassword") String newPassword,
-                                 @RequestParam("confirmPassword") String confirmPassword,
-                                 Principal principal, RedirectAttributes redirectAttributes) {
-        if (!newPassword.equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match.");
-            return "redirect:/accountant/change-password";
-        }
-
-        // Update password logic for the current logged-in accountant
-        String loggedInAccountantEmail = principal.getName();
-        // ... Perform password update in the database ...
-
-        redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully.");
-        return "redirect:/accountant/accountant_home"; // Redirect to home page with success message
-    }
 }

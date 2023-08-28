@@ -7,7 +7,7 @@
   <style>
         /* Additional styles for the View Accountants page */
         /* Customize as needed */
-        body, h1, h2, h3, h4, h5, h6, p, a, img, div {
+        body, h1, h3, h4, h5, h6, p, a, img, div {
             margin: 0;
             padding: 0;
         }
@@ -23,14 +23,15 @@
       color: #ffffff;
     }
 
-    .logo img {
-      height: 30px;
-    }
+.logo img {
+    height: 50px;
+}
 
-    .logout a {
-      color: #ffffff;
-      text-decoration: none;
-    }
+   .logout a {
+    color: #ffffff;
+    text-decoration: none;
+        font-size: 20px;
+}
 
     /* Footer */
     .footer {
@@ -61,12 +62,19 @@
             text-decoration: none;
             color: #007bff;
         }
+        .content{
+          height: 85vh;
+        }
+        h2{
+            padding-top: 30px;
+    padding-left: 20px;
+        }
     </style>
 </head>
 <body>
 <div class="top-bar">
   <div class="logo">
-    <img src="https://i.pinimg.com/originals/df/56/c6/df56c64dbbf7217c5eb6d08ee1947377.jpg" alt="Logo">
+    <img src="/resources/static/img/logo.png" alt="Logo">
   </div>
   <div class="logout">
     <a href="/admin/logout">Logout</a>
@@ -102,9 +110,8 @@
     </table>
   </div>
 </div>
-
 <div class="footer">
-  <p>&copy; 2023 Your Company. All rights reserved.</p>
+  <p>&copy; 2023 Lapcare. All rights reserved.</p>
 </div>
 </body>
 </html>
