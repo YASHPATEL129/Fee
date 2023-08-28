@@ -15,7 +15,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,16 +46,17 @@ public class AccountantLoginController {
     }
 
     @PostMapping("/authenticate")
-    public String login(@RequestParam String name, @RequestParam String password, HttpSession session, Model model) {
-        Accountant accountant = accountantRepository.findByNameAndPassword(name, password);
+    public String login(@RequestParam String email, @RequestParam String password, HttpSession session, Model model) {
+        Accountant accountant = accountantRepository.findByEmailAndPassword(email, password);
         if (accountant != null) {
             session.setAttribute("accountant", accountant);
             return "redirect:/accountant/home";
         } else {
-            model.addAttribute("loginError", "Invalid username or password");
+            model.addAttribute("loginError", "Invalid email or password");
             return "login_accountant";
         }
     }
+
 
     @GetMapping("/home")
     public String homePage(HttpSession session) {
@@ -113,6 +116,13 @@ public class AccountantLoginController {
                 double dueFee = student.getFee() - student.getPaid();
                 student.setDue(dueFee);
 
+                // Set student fee status
+                if (dueFee == 0) {
+                    student.setStudentFeeStatus("paid");
+                } else {
+                    student.setStudentFeeStatus("unpaid");
+                }
+
                 studentRepository.save(student);
             }
         }
@@ -124,7 +134,7 @@ public class AccountantLoginController {
     @ResponseBody
     public ResponseEntity<String> sendEmailToStudents() {
         try {
-            List<Student> students = studentRepository.findAll(); // Retrieve all students from the repository
+            List<Student> students = studentRepository.findByStudentFeeStatus("Not Paid"); // Retrieve unpaid students from the repository
 
             for (Student student : students) {
                 String subject = "Fee Reminder";
@@ -133,8 +143,7 @@ public class AccountantLoginController {
                 message += "Total Fee: " + student.getFee() + "\n";
                 message += "Paid Fee: " + student.getPaid() + "\n";
                 message += "Due Fee: " + student.getDue() + "\n\n";
-                message += "If you have already paid the fee, you can ignore this email.\n";
-                message += "If not, please pay the fee as soon as possible.\n\n";
+                message += "Please pay the fee as soon as possible.\n\n";
                 message += "Regards,\nYour School";
 
                 SimpleMailMessage email = new SimpleMailMessage();
@@ -150,5 +159,56 @@ public class AccountantLoginController {
             e.printStackTrace(); // Log the exception details
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending emails");
         }
+    }
+    @PostMapping("/send-paid-email")
+    @ResponseBody
+    public ResponseEntity<String> sendEmailToPaidStudents() {
+        try {
+            List<Student> students = studentRepository.findByStudentFeeStatus("paid");
+
+            for (Student student : students) {
+                String subject = "Fee Receipt Collection Reminder";
+                String message = "Dear " + student.getName() + ",\n\n";
+                message += "If you haven't received your fee receipt, please come to the admin office and collect it.\n";
+                message += "If you have already collected your receipt, you can ignore this email.\n\n";
+                message += "Regards,\nYour School";
+
+                SimpleMailMessage email = new SimpleMailMessage();
+                email.setTo(student.getEmail());
+                email.setSubject(subject);
+                email.setText(message);
+
+                emailSender.send(email);
+            }
+
+            return ResponseEntity.ok("Emails sent successfully!");
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception details
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending emails");
+        }
+    }
+
+
+
+    @GetMapping("/change-password")
+    public String showChangePasswordForm() {
+        return "change_password"; // Return the HTML template name
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam("newPassword") String newPassword,
+                                 @RequestParam("confirmPassword") String confirmPassword,
+                                 Principal principal, RedirectAttributes redirectAttributes) {
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match.");
+            return "redirect:/accountant/change-password";
+        }
+
+        // Update password logic for the current logged-in accountant
+        String loggedInAccountantEmail = principal.getName();
+        // ... Perform password update in the database ...
+
+        redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully.");
+        return "redirect:/accountant/accountant_home"; // Redirect to home page with success message
     }
 }

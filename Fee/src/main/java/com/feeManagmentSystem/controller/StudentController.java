@@ -35,9 +35,6 @@ public class StudentController {
         // Save the student to the database
         studentRepository.save(student);
 
-        // Send email to student with username and password (implement this logic)
-        emailService.sendEmailToStudent(student);
-
         return "redirect:/accountant/home"; // Redirect back to the accountant's home page
     }
 

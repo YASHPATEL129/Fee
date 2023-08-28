@@ -68,6 +68,7 @@
     padding: 10px;
     background-color: #f3f4f6;
 }
+
     </style>
 </head>
 <body>
@@ -87,7 +88,9 @@
         <div class="buttons">
             <a href="/accountant/add-student" class="button">Add Student</a>
             <a href="/accountant/view-students" class="button">View Students</a>
-            <button class="button" id="sendEmailButton">Send Email</button> <!-- Use a button element instead of anchor -->
+            <button class="button" id="sendEmailButton">Send Email For Unpaid Student</button> <!-- Use a button element instead of anchor -->
+            <button class="button" id="sendPaidEmailButton">Send Email For Paid Student</button>
+            <a href="/accountant/change-password" class="button">Change Password</a>
         </div>
     </div>
 </div>
@@ -118,6 +121,26 @@
             }
         });
     }
+
+  $(document).ready(function() {
+        $("#sendPaidEmailButton").click(function() {
+            sendEmailToPaidStudents();
+        });
+    });
+
+    function sendEmailToPaidStudents() {
+        $.ajax({
+            type: "POST",
+            url: "/accountant/send-paid-email",
+            success: function(response) {
+                alert("Emails sent successfully!");
+            },
+            error: function() {
+                alert("Error sending emails. Please try again.");
+            }
+        });
+    }
+
 </script>
 </body>
 </html>

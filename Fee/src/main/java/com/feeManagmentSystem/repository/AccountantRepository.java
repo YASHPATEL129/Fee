@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface AccountantRepository extends JpaRepository<Accountant , Long> {
 
-    Accountant findByNameAndPassword(String name, String password);
+    Accountant findByEmailAndPassword(String email, String password);
 }
